@@ -1,2 +1,1 @@
-# ExoSimplify
-A simple implementation of ExoPlayer
+## ExoSimplify is background video player with full screen support.

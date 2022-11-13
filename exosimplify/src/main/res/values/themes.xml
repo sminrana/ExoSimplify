@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ThemeOverlay.ExoSimplify.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/app_new_color_dark_black</item>
+        <item name="fullscreenTextColor">@color/app_new_color_dark_black</item>
+    </style>
+
+    <style name="ExoSimplify.Fullscreen" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/Widget.AppTheme.ActionBar.Fullscreen</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+    </style>
+
+</resources>

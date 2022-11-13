@@ -1,0 +1,5 @@
+<resources>
+    <style name="Widget.AppTheme.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/app_new_color_dark_black</item>
+    </style>
+</resources>
