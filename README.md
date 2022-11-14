@@ -3,7 +3,7 @@
 
 # ExoSimplify for Android
 
-ExoSimplify is a background video player with full screen support and notification support. 
+ExoSimplify is a background video player with full screen and notification support. 
 
 
 ### Installation
