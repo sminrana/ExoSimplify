@@ -79,7 +79,7 @@ You must add an icon (ic_notification_icon.png) for the notification in the draw
 
 **See more in the demo application (app folder)**
 
-#### Example Video
+#### Video of working App
 
 [<img src="https://raw.githubusercontent.com/sminrana/ExoSimplify/main/app/video_cover.png" width="50%">](https://raw.githubusercontent.com/sminrana/ExoSimplify/main/app/video.mp4 "ExoSimplify")
 
