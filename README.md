@@ -1,7 +1,7 @@
 [![](https://jitpack.io/v/sminrana/exosimplify.svg)](https://jitpack.io/#sminrana/exosimplify)
 
 
-# ExoSimplify for Android
+# ExoSimplify Video Player for Android
 
 ExoSimplify is a background video player with full screen and notification support. 
 
