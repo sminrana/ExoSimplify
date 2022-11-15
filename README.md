@@ -1,9 +1,9 @@
 [![](https://jitpack.io/v/sminrana/exosimplify.svg)](https://jitpack.io/#sminrana/exosimplify)
 
 
-# ExoSimplify for Android
+# ExoSimplify Video Player for Android
 
-ExoSimplify is a background video player with full screen support and notification support. 
+ExoSimplify is a background video player with full screen and notification support. 
 
 
 ### Installation
@@ -79,7 +79,7 @@ You must add an icon (ic_notification_icon.png) for the notification in your app
 
 **See more in the demo application (app folder)**
 
-#### Example Video
+#### Video of working App
 
 [<img src="https://raw.githubusercontent.com/sminrana/ExoSimplify/main/app/video_cover.png" width="50%">](https://raw.githubusercontent.com/sminrana/ExoSimplify/main/app/video.mp4 "ExoSimplify")
 
