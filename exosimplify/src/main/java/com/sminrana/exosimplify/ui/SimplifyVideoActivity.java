@@ -419,7 +419,6 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
         updateNotification(capabilities);
     }
 
-    private NotificationCompat.Builder notificationBuilder;
     private NotificationChannel newChannel;
 
     private void updateNotification(long capabilities) {
@@ -427,10 +426,8 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
             createNotificationChannel();
         }
 
-        if (notificationBuilder == null) {
-            notificationBuilder = NotificationBuilder.from(
-                    this, getApplicationContext(), mMediaSessionCompat, mNotificationChannelId);
-        }
+        NotificationCompat.Builder notificationBuilder = NotificationBuilder.from(
+                this, getApplicationContext(), mMediaSessionCompat, mNotificationChannelId);
 
         if ((capabilities & PlaybackStateCompat.ACTION_PAUSE) != 0) {
             notificationBuilder.addAction(R.drawable.ic_pause, "Pause",
