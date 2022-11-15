@@ -24,6 +24,7 @@ import android.provider.Settings;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,11 +53,10 @@ import com.sminrana.exosimplify.player.PlayerView;
 public abstract class SimplifyVideoActivity extends AppCompatActivity implements ActivityControl, PlayerControl {
     private SinglePlayer singlePlayer = SinglePlayer.getInstance();
     private static final float PLAYBACK_RATE = 1.0f;
-
-    private long playerCurrentPosition = 0;
-    private String actionBarColor = "";
-    private String title = "";
-    private String url = "";
+    private static long playerCurrentPosition = 0;
+    private static String actionBarColor = "";
+    private static String title = "";
+    private static String url = "";
     
     private LinearLayout llContainer;
     private PlayerView videoView;
@@ -171,31 +171,34 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
         }
     }
 
+    private void toggleOrientation() {
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+
+        if (Settings.System.getInt(getContentResolver(),
+                Settings.System.ACCELEROMETER_ROTATION, 0) == 1) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                }
+            }, 2000);
+        }
+    }
+
     /**
      * ---------------------------------------------------------------------------------------------
      * Exo singlePlayer.player
      * ---------------------------------------------------------------------------------------------
      */
-    private void updateMediaSource() {
-        DataSource.Factory dataSourceFactory = new DefaultDataSource.Factory(getApplicationContext());
-
-        /* This is the MediaSource representing the media to be played. */
-        MediaSource videoSource;
-
-        /*
-         * Check for HLS playlist file extension ( .m3u8 or .m3u )
-         * https://tools.ietf.org/html/rfc8216
-         */
-        if(url.contains(".m3u8") || url.contains(".m3u")) {
-            videoSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(Uri.parse(url)));
-        } else {
-            videoSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(Uri.parse(url)));
-        }
-
-        singlePlayer.player.setMediaSource(videoSource);
-    }
-
     private void initializePlayer(boolean fromNotification) {
+        playerCurrentPosition = 0;
+
         if (fromNotification) {
             videoView.setPlayer(singlePlayer.player);
         } else {
@@ -222,29 +225,25 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
 
             bindNotificationService();
         }
-
     }
 
-    private final Handler mHideHandler = new Handler();
+    private void updateMediaSource() {
+        DataSource.Factory dataSourceFactory = new DefaultDataSource.Factory(getApplicationContext());
 
-    private void toggleOrientation() {
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        /* This is the MediaSource representing the media to be played. */
+        MediaSource videoSource;
+
+        /*
+         * Check for HLS playlist file extension ( .m3u8 or .m3u )
+         * https://tools.ietf.org/html/rfc8216
+         */
+        if(url.contains(".m3u8") || url.contains(".m3u")) {
+            videoSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(Uri.parse(url)));
         } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            videoSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(Uri.parse(url)));
         }
 
-        if (Settings.System.getInt(getContentResolver(),
-                Settings.System.ACCELEROMETER_ROTATION, 0) == 1) {
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-                }
-            }, 2000);
-        }
+        singlePlayer.player.setMediaSource(videoSource);
     }
 
     @Override
@@ -292,7 +291,7 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
                 try {
                     playerCurrentPosition = singlePlayer.player.getDuration();
 
-                    updatePlaybackState(PlayerState.PLAYING);
+                    // Set seekbar position
                     setupMediaSession();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -358,26 +357,28 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
     }
 
     private void setupMediaSession() {
-        ComponentName receiver = new ComponentName(this.getPackageName(),
-                RemoteReceiver.class.getName());
+        if (mMediaSessionCompat == null) {
+            ComponentName receiver = new ComponentName(this.getPackageName(),
+                    RemoteReceiver.class.getName());
 
-        mMediaSessionCompat = new MediaSessionCompat(this, "mm_player", receiver, null);
-        mMediaSessionCompat.setCallback(new MediaSessionCallback());
-        mMediaSessionCompat.setActive(true);
+            mMediaSessionCompat = new MediaSessionCompat(this, "mm_player", receiver, null);
+            mMediaSessionCompat.setCallback(new MediaSessionCallback());
+            mMediaSessionCompat.setActive(true);
+        }
 
-        updatePlaybackState(PlayerState.PLAYING);
-        setAudioMetadata();
-    }
-
-    private void setAudioMetadata() {
+        // Update video title on the notification panel
         MediaMetadataCompat metadata = new MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, "subtitle")
+                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, "")
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, playerCurrentPosition)
                 .build();
 
-        mMediaSessionCompat.setMetadata(metadata);
+        if (mMediaSessionCompat != null) {
+            mMediaSessionCompat.setMetadata(metadata);
+        }
+
+        updatePlaybackState(PlayerState.PLAYING);
     }
 
     private PlaybackStateCompat.Builder getPlaybackStateBuilder() {
@@ -418,13 +419,18 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
         updateNotification(capabilities);
     }
 
+    private NotificationCompat.Builder notificationBuilder;
+    private NotificationChannel newChannel;
+
     private void updateNotification(long capabilities) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel();
         }
 
-        NotificationCompat.Builder notificationBuilder = NotificationBuilder.from(
-                this, getApplicationContext(), mMediaSessionCompat, mNotificationChannelId, title);
+        if (notificationBuilder == null) {
+            notificationBuilder = NotificationBuilder.from(
+                    this, getApplicationContext(), mMediaSessionCompat, mNotificationChannelId);
+        }
 
         if ((capabilities & PlaybackStateCompat.ACTION_PAUSE) != 0) {
             notificationBuilder.addAction(R.drawable.ic_pause, "Pause",
@@ -436,8 +442,7 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
                     NotificationBuilder.getActionIntent(getApplicationContext(), KeyEvent.KEYCODE_MEDIA_PLAY));
         }
 
-        NotificationManager notificationManager = (NotificationManager)
-                this.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = getNotificationManager();
         if (notificationManager != null) {
             notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
         }
@@ -445,30 +450,33 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
 
     @RequiresApi(Build.VERSION_CODES.O)
     private void createNotificationChannel() {
-        NotificationManager notificationManager = (NotificationManager)
-                getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         CharSequence channelNameDisplayedToUser = "Creation Kit Notification";
-
         int importance = NotificationManager.IMPORTANCE_LOW;
 
-        NotificationChannel newChannel = new NotificationChannel(
-                mNotificationChannelId, channelNameDisplayedToUser, importance);
-        newChannel.setDescription("Creation Kit Notification");
-        newChannel.setShowBadge(false);
-        newChannel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
+        if (newChannel == null) {
+            newChannel = new NotificationChannel(
+                    mNotificationChannelId, channelNameDisplayedToUser, importance);
+            newChannel.setDescription("Creation Kit Notification");
+            newChannel.setShowBadge(false);
+            newChannel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
+        }
 
-        if (notificationManager != null) {
+        NotificationManager notificationManager = getNotificationManager();
+        if (newChannel != null) {
             notificationManager.createNotificationChannel(newChannel);
         }
     }
 
     private void cleanPlayerNotification() {
-        NotificationManager notificationManager = (NotificationManager)
-                getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = getNotificationManager();
 
         if (notificationManager != null) {
             notificationManager.cancel(NOTIFICATION_ID);
         }
+    }
+
+    private NotificationManager getNotificationManager() {
+        return (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     private long getCapabilities(PlayerState playerState) {

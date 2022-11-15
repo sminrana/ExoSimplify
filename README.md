@@ -73,7 +73,7 @@ intent.putExtra("url", "https://www.shutterstock.com/shutterstock/videos/1094984
 startActivity(intent);
 ```
 
-You must add an icon (ic_notification_icon.png) for the notification in the drawable directory.
+You must add an icon (ic_notification_icon.png) for the notification in your app drawable directory.
 
 ---
 
@@ -89,4 +89,7 @@ Inspired by https://github.com/muslimtv/flutter_playout.
 ## Contributing
 
 You're contribution is welcome here!
+
+https://github-readme-stats.vercel.app/api?username={sminrana}
+
 

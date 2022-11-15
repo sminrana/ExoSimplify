@@ -34,7 +34,20 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), VideoActivity.class);
-                intent.putExtra("title", "Demo Video");
+                intent.putExtra("title", "Video One");
+
+                // Make sure video URL is valid now
+                // this one has no sound
+                intent.putExtra("url", "https://www.shutterstock.com/shutterstock/videos/1094984573/preview/stock-footage-zombie-hand-rising-up-smartphone-with-green-screen-out-of-grave-holiday-event-halloween-concept.mp4");
+                startActivity(intent);
+            }
+        });
+
+        binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), VideoActivity.class);
+                intent.putExtra("title", "Video Two");
 
                 // Make sure video URL is valid now
                 // this one has no sound

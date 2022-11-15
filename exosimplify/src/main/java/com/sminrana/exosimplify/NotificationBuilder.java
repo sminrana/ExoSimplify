@@ -23,7 +23,7 @@ public class NotificationBuilder {
     public static NotificationCompat.Builder from(Activity activity,
                                                   Context context,
                                                   MediaSessionCompat mediaSession,
-                                                  String notificationChannelId, String title) {
+                                                  String notificationChannelId) {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, notificationChannelId);
 
@@ -31,7 +31,7 @@ public class NotificationBuilder {
                 "ic_notification_icon", "drawable", context.getPackageName());
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), smallIcon);
 
-        builder.setContentTitle(title)
+        builder.setContentTitle("")
                 .setContentText("")
                 .setLargeIcon(largeIcon)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
