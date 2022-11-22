@@ -190,7 +190,7 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
                 if (singlePlayer.player.isPlaying()) {
                     singlePlayer.player.stop();
                     singlePlayer.player.clearMediaItems();
-                    cleanPlayerNotification();
+                    removePlayerNotification();
                 }
             }
 
@@ -233,7 +233,7 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
     @Override
     public void onAppKill() {
         unBindNotificationService();
-        cleanPlayerNotification();
+        removePlayerNotification();
     }
 
     @Override
@@ -308,6 +308,65 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
         }
     }
 
+    private long getCapabilities(PlayerState playerState) {
+        long capabilities = 0;
+
+        switch (playerState) {
+            case PLAYING:
+            case BUFFERING:
+                capabilities |= PlaybackStateCompat.ACTION_PAUSE
+                        | PlaybackStateCompat.ACTION_STOP;
+                break;
+            case PAUSED:
+                capabilities |= PlaybackStateCompat.ACTION_PLAY
+                        | PlaybackStateCompat.ACTION_STOP;
+                break;
+            case IDLE:
+                capabilities |= PlaybackStateCompat.ACTION_PLAY;
+                break;
+        }
+
+        return capabilities;
+    }
+
+    private PlaybackStateCompat.Builder getPlaybackStateBuilder() {
+        PlaybackStateCompat playbackState = mMediaSessionCompat.getController().getPlaybackState();
+
+        return playbackState == null
+                ? new PlaybackStateCompat.Builder()
+                : new PlaybackStateCompat.Builder(playbackState);
+    }
+
+    private void updatePlaybackState(PlayerState playerState) {
+        if (mMediaSessionCompat == null) return;
+
+        PlaybackStateCompat.Builder newPlaybackState = getPlaybackStateBuilder();
+
+        long capabilities = getCapabilities(playerState);
+        newPlaybackState.setActions(capabilities);
+
+        int playbackStateCompat = PlaybackStateCompat.STATE_NONE;
+        switch (playerState) {
+            case PLAYING:
+                playbackStateCompat = PlaybackStateCompat.STATE_PLAYING;
+                break;
+            case PAUSED:
+                playbackStateCompat = PlaybackStateCompat.STATE_PAUSED;
+                break;
+            case BUFFERING:
+                playbackStateCompat = PlaybackStateCompat.STATE_BUFFERING;
+                break;
+            case IDLE:
+                playbackStateCompat = PlaybackStateCompat.STATE_STOPPED;
+                break;
+        }
+
+        newPlaybackState.setState(playbackStateCompat, singlePlayer.player.getCurrentPosition(), PLAYBACK_RATE);
+        mMediaSessionCompat.setPlaybackState(newPlaybackState.build());
+
+        updateNotification(capabilities);
+    }
+
     /**
      * ---------------------------------------------------------------------------------------------
      * Notification and MediaSession
@@ -318,7 +377,6 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
     private static final int NOTIFICATION_ID = 0;
 
     private final class MediaSessionCallback extends MediaSessionCompat.Callback {
-
         @Override
         public void onPause() {
             pause();
@@ -363,44 +421,6 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
         }
 
         updatePlaybackState(PlayerState.PLAYING);
-    }
-
-    private PlaybackStateCompat.Builder getPlaybackStateBuilder() {
-        PlaybackStateCompat playbackState = mMediaSessionCompat.getController().getPlaybackState();
-
-        return playbackState == null
-                ? new PlaybackStateCompat.Builder()
-                : new PlaybackStateCompat.Builder(playbackState);
-    }
-
-    private void updatePlaybackState(PlayerState playerState) {
-        if (mMediaSessionCompat == null) return;
-
-        PlaybackStateCompat.Builder newPlaybackState = getPlaybackStateBuilder();
-
-        long capabilities = getCapabilities(playerState);
-        newPlaybackState.setActions(capabilities);
-
-        int playbackStateCompat = PlaybackStateCompat.STATE_NONE;
-        switch (playerState) {
-            case PLAYING:
-                playbackStateCompat = PlaybackStateCompat.STATE_PLAYING;
-                break;
-            case PAUSED:
-                playbackStateCompat = PlaybackStateCompat.STATE_PAUSED;
-                break;
-            case BUFFERING:
-                playbackStateCompat = PlaybackStateCompat.STATE_BUFFERING;
-                break;
-            case IDLE:
-                playbackStateCompat = PlaybackStateCompat.STATE_STOPPED;
-                break;
-        }
-
-        newPlaybackState.setState(playbackStateCompat, singlePlayer.player.getCurrentPosition(), PLAYBACK_RATE);
-        mMediaSessionCompat.setPlaybackState(newPlaybackState.build());
-
-        updateNotification(capabilities);
     }
 
     private NotificationChannel newChannel;
@@ -448,9 +468,8 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
         }
     }
 
-    private void cleanPlayerNotification() {
+    private void removePlayerNotification() {
         NotificationManager notificationManager = getNotificationManager();
-
         if (notificationManager != null) {
             notificationManager.cancel(NOTIFICATION_ID);
         }
@@ -458,27 +477,6 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
 
     private NotificationManager getNotificationManager() {
         return (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-    }
-
-    private long getCapabilities(PlayerState playerState) {
-        long capabilities = 0;
-
-        switch (playerState) {
-            case PLAYING:
-            case BUFFERING:
-                capabilities |= PlaybackStateCompat.ACTION_PAUSE
-                        | PlaybackStateCompat.ACTION_STOP;
-                break;
-            case PAUSED:
-                capabilities |= PlaybackStateCompat.ACTION_PLAY
-                        | PlaybackStateCompat.ACTION_STOP;
-                break;
-            case IDLE:
-                capabilities |= PlaybackStateCompat.ACTION_PLAY;
-                break;
-        }
-
-        return capabilities;
     }
 
     /**
