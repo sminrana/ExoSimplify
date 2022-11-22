@@ -99,22 +99,6 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
                 toggleOrientation();
             }
         });
-
-        ImageView playButton = videoView.findViewById(R.id.exo_play);
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                play();
-            }
-        });
-
-        ImageView pauseButton = videoView.findViewById(R.id.exo_pause);
-        pauseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pause();
-            }
-        });
     }
 
     @Override

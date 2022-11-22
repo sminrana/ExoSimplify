@@ -20,10 +20,8 @@
             style="@style/ExoMediaButton.Rewind"/>
         <ImageButton android:id="@id/exo_repeat_toggle"
             style="@style/ExoMediaButton"/>
-        <ImageButton android:id="@+id/exo_play"
+        <ImageButton android:id="@+id/exo_play_pause"
             style="@style/ExoMediaButton.Play"/>
-        <ImageButton android:id="@+id/exo_pause"
-            style="@style/ExoMediaButton.Pause"/>
         <ImageButton android:id="@id/exo_ffwd"
             style="@style/ExoMediaButton.FastForward"/>
 
