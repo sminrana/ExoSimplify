@@ -90,8 +90,6 @@ Inspired by https://github.com/muslimtv/flutter_playout.
 
 You're contribution is welcome here!
 
-https://github-readme-stats.vercel.app/api?username={sminrana}
-
 If you find this library useful, share with friend or star it. 
 
 
