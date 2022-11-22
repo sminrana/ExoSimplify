@@ -14,18 +14,18 @@ ExoSimplify is a background video player with full screen and notification suppo
 
 ```gradle
 allprojects {
-		repositories {
-			maven { url 'https://jitpack.io' }
-		}
+	repositories {
+		maven { url 'https://jitpack.io' }
 	}
+}
 ```
 
 2. Add the dependency
 
 ```gradle
 dependencies {
-	    implementation 'com.github.sminrana:ExoSimplify:0.9.0'
-	}
+	implementation 'com.github.sminrana:ExoSimplify:0.9.2'
+}
 ```
 
 --- 
