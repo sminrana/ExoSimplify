@@ -36,6 +36,9 @@ public class FirstFragment extends Fragment {
                 Intent intent = new Intent(getContext(), VideoActivity.class);
                 intent.putExtra("title", "Video One");
 
+                // Enable loop
+                intent.putExtra("loop", true);
+
                 // Make sure video URL is valid now
                 // this one has no sound
                 intent.putExtra("url", "https://www.shutterstock.com/shutterstock/videos/1094984573/preview/stock-footage-zombie-hand-rising-up-smartphone-with-green-screen-out-of-grave-holiday-event-halloween-concept.mp4");

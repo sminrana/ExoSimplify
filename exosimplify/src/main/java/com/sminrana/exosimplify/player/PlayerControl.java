@@ -6,4 +6,5 @@ public interface PlayerControl {
     void seekTo(long position);
     void ended();
     void error(String error);
+    boolean loop();
 }

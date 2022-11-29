@@ -1,5 +1,6 @@
 package com.sminrana.exosimplify.ui;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,17 +25,16 @@ import android.provider.Settings;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.PlaybackException;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.analytics.AnalyticsListener;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
@@ -54,9 +54,11 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
     private SinglePlayer singlePlayer = SinglePlayer.getInstance();
     private static final float PLAYBACK_RATE = 1.0f;
     private static long playerCurrentPosition = 0;
+
     private static String actionBarColor = "";
     private static String title = "";
     private static String url = "";
+    private static boolean loop = false;
     
     private LinearLayout llContainer;
     private PlayerView videoView;
@@ -77,6 +79,7 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
 
             title = extras.getString("title");
             url = extras.getString("url");
+            loop = extras.getBoolean("loop");
         }
 
         if (actionBarColor.isEmpty()) {
@@ -203,7 +206,10 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
 
             updateMediaSource();
 
-            //singlePlayer.player.setRepeatMode(singlePlayer.player.REPEAT_MODE_ONE);
+            if (loop || loop()) {
+                singlePlayer.player.setRepeatMode(singlePlayer.player.REPEAT_MODE_ONE);
+            }
+
             singlePlayer.player.prepare();
             singlePlayer.player.setPlayWhenReady(true);
 
@@ -230,22 +236,14 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
         singlePlayer.player.setMediaSource(videoSource);
     }
 
+    /**
+     * Called just before the app gets killed. Cleanup notification and unbind any services
+     * in your activity when you implement this.
+     */
     @Override
     public void onAppKill() {
         unBindNotificationService();
         removePlayerNotification();
-    }
-
-    @Override
-    public void ended() {
-
-    }
-
-    @Override
-    public void pause() {
-        if (singlePlayer.player != null && singlePlayer.player.isPlaying()) {
-            singlePlayer.player.setPlayWhenReady(false);
-        }
     }
 
     @Override
@@ -256,15 +254,44 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void pause() {
+        if (singlePlayer.player != null && singlePlayer.player.isPlaying()) {
+            singlePlayer.player.setPlayWhenReady(false);
+        }
+    }
+
+    @Override
     public void seekTo(long position) {
         if (singlePlayer.player != null) {
             singlePlayer.player.seekTo(position);
         }
     }
 
+    /**
+     * This gets called when player completes a video
+     * It never gets called if {@link #loop()} is set to true
+     */
+    @Override
+    public void ended() {
+
+    }
+
+    /**
+     * Get any error if player throws one
+     */
     @Override
     public void error(String error) {
 
+    }
+
+    /**
+     * Enable video player loop
+     *
+     * @return true for enabling loop
+     */
+    @Override
+    public boolean loop() {
+        return false;
     }
 
     class PlayerAnalyticsEventsListener implements AnalyticsListener {
@@ -297,6 +324,19 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
                 updatePlaybackState(PlayerState.PLAYING);
             } else {
                 updatePlaybackState(PlayerState.PAUSED);
+            }
+        }
+
+        @Override
+        public void onMediaItemTransition(
+                EventTime eventTime,
+                @Nullable MediaItem mediaItem,
+                @Player.MediaItemTransitionReason int reason) {
+
+            // Reset seekbar position on the notification
+            if ((loop || loop()) && reason == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT) {
+                playerCurrentPosition = singlePlayer.player.getDuration();
+                setupMediaSession();
             }
         }
 
@@ -451,10 +491,10 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
 
     @RequiresApi(Build.VERSION_CODES.O)
     private void createNotificationChannel() {
-        CharSequence channelNameDisplayedToUser = "Creation Kit Notification";
-        int importance = NotificationManager.IMPORTANCE_LOW;
-
         if (newChannel == null) {
+            CharSequence channelNameDisplayedToUser = "Creation Kit Notification";
+            int importance = NotificationManager.IMPORTANCE_LOW;
+
             newChannel = new NotificationChannel(
                     mNotificationChannelId, channelNameDisplayedToUser, importance);
             newChannel.setDescription("Creation Kit Notification");
