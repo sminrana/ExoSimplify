@@ -8,7 +8,7 @@ ExoSimplify is a background video player with full screen and notification suppo
 
 ### Installation
 
-1. Add it in your root build.gradle at the end of repositories:
+1. Add it in your root build.gradle (Project) at the end of repositories:
 
 
 
@@ -20,7 +20,7 @@ allprojects {
 }
 ```
 
-2. Add the dependency
+2. Add the dependency in your app build.gradle (Module)
 
 ```gradle
 dependencies {
