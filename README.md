@@ -24,7 +24,7 @@ allprojects {
 
 ```gradle
 dependencies {
-	implementation 'com.github.sminrana:ExoSimplify:0.9.3'
+	implementation 'com.github.sminrana:ExoSimplify:0.9.4'
 }
 ```
 
