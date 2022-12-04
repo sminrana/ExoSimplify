@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import android.support.v4.media.MediaDescriptionCompat;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.view.KeyEvent;
 
@@ -24,6 +27,9 @@ public class NotificationBuilder {
                                                   Context context,
                                                   MediaSessionCompat mediaSession,
                                                   String notificationChannelId) {
+        MediaControllerCompat controller = mediaSession.getController();
+        MediaMetadataCompat mediaMetadata = controller.getMetadata();
+        MediaDescriptionCompat description = mediaMetadata.getDescription();
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, notificationChannelId);
 
@@ -31,14 +37,15 @@ public class NotificationBuilder {
                 "ic_notification_icon", "drawable", context.getPackageName());
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), smallIcon);
 
-        builder.setContentTitle("")
+        builder.setContentTitle(description.getTitle())
                 .setContentText("")
                 .setLargeIcon(largeIcon)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(mediaSession.getSessionToken()))
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setSmallIcon(smallIcon)
-                .setDeleteIntent(getActionIntent(context, KeyEvent.KEYCODE_MEDIA_STOP));
+                .setDeleteIntent(getActionIntent(context, KeyEvent.KEYCODE_MEDIA_STOP))
+                .setOngoing(true);
 
         Intent intent = new Intent(context, activity.getClass());
         intent.putExtra("from_notification", true);
