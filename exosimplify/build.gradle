@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.library'
+    id 'maven-publish'
 }
 
 android {
@@ -21,6 +22,11 @@ android {
         }
     }
 
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_11
+//        targetCompatibility JavaVersion.VERSION_11
+//    }
+
 }
 
 dependencies {
@@ -38,4 +44,17 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-hls:2.18.1'
     implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.18.1'
     implementation 'com.scwang.wave:MultiWaveHeader:1.0.0-andx'
+}
+
+project.afterEvaluate {
+    publishing {
+        publications {
+            libraryProject(MavenPublication) {
+                setGroupId 'com.sminrana'
+                setArtifactId 'exosimplify'
+                version '1.0.2'
+                artifact bundleReleaseAar
+            }
+        }
+    }
 }
