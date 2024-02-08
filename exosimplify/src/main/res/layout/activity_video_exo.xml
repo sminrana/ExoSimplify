@@ -11,9 +11,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:background="#000000"
         android:id="@+id/ll_video_view_container">
+
+        <com.scwang.wave.MultiWaveHeader
+            android:id="@+id/waveHeader"
+            android:layout_width="match_parent"
+            android:layout_height="230dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
+            app:mwhCloseColor="#009ada"
+            app:mwhStartColor="#009ada"
+            app:mwhWaveHeight="80dp" />
 
         <com.sminrana.exosimplify.player.PlayerView
             android:id="@+id/styledPlayerView"

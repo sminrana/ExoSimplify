@@ -82,9 +82,14 @@ You must add an icon (ic_notification_icon.png) for the notification in your app
 
 **See more in the demo application (app folder)**
 
-#### Video of working App
+#### Video Player
 
 [<img src="https://raw.githubusercontent.com/sminrana/ExoSimplify/main/app/video_cover.png" width="50%">](https://raw.githubusercontent.com/sminrana/ExoSimplify/main/app/video.mp4 "ExoSimplify")
+
+#### Audio Player
+
+[<img src="https://raw.githubusercontent.com/sminrana/ExoSimplify/main/app/audio_playing.png" width="50%">](https://raw.githubusercontent.com/sminrana/ExoSimplify/main/app/audio_playing.png "ExoSimplify")
+
 
 Inspired by https://github.com/muslimtv/flutter_playout.
 

@@ -58,6 +58,19 @@ public class FirstFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        binding.buttonAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), VideoActivity.class);
+                intent.putExtra("title", "Audio");
+
+                // Make sure video URL is valid now
+                // this one has no sound
+                intent.putExtra("url", "https://download.samplelib.com/mp3/sample-15s.mp3");
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

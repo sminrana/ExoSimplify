@@ -41,6 +41,7 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSource;
+import com.scwang.wave.MultiWaveHeader;
 import com.sminrana.exosimplify.NotificationBuilder;
 import com.sminrana.exosimplify.NotificationService;
 import com.sminrana.exosimplify.R;
@@ -64,6 +65,7 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
     private PlayerView videoView;
     private SimplifyVideoActivity activity;
     private ImageView fullScreenButton;
+    private MultiWaveHeader audioWaveHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +96,7 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
 
         llContainer = findViewById(R.id.ll_video_view_container);
         videoView =  findViewById(R.id.styledPlayerView);
+        audioWaveHeader = findViewById(R.id.waveHeader);
 
         fullScreenButton = videoView.findViewById(R.id.exo_fullscreen_icon);
         fullScreenButton.setOnClickListener(new View.OnClickListener() {
@@ -217,19 +220,24 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
         DataSource.Factory dataSourceFactory = new DefaultDataSource.Factory(getApplicationContext());
 
         /* This is the MediaSource representing the media to be played. */
-        MediaSource videoSource;
+        MediaSource mediaSource;
 
         /*
          * Check for HLS playlist file extension ( .m3u8 or .m3u )
          * https://tools.ietf.org/html/rfc8216
          */
         if(url.contains(".m3u8") || url.contains(".m3u")) {
-            videoSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(Uri.parse(url)));
+            mediaSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(Uri.parse(url)));
         } else {
-            videoSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(Uri.parse(url)));
+            mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(Uri.parse(url)));
         }
 
-        singlePlayer.player.setMediaSource(videoSource);
+        audioWaveHeader.setVisibility(View.GONE);
+        if(url.contains(".mp3")) {
+            audioWaveHeader.setVisibility(View.VISIBLE);
+        }
+
+        singlePlayer.player.setMediaSource(mediaSource);
     }
 
     /**
@@ -488,12 +496,12 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
     @RequiresApi(Build.VERSION_CODES.O)
     private void createNotificationChannel() {
         if (newChannel == null) {
-            CharSequence channelNameDisplayedToUser = "Creation Kit Notification";
+            CharSequence channelNameDisplayedToUser = "Notification";
             int importance = NotificationManager.IMPORTANCE_LOW;
 
             newChannel = new NotificationChannel(
                     mNotificationChannelId, channelNameDisplayedToUser, importance);
-            newChannel.setDescription("Creation Kit Notification");
+            newChannel.setDescription("Notification");
             newChannel.setShowBadge(false);
             newChannel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
         }
