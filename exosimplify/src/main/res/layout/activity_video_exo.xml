@@ -13,16 +13,7 @@
         android:orientation="vertical"
         android:background="#000000"
         android:id="@+id/ll_video_view_container">
-
-        <com.scwang.wave.MultiWaveHeader
-            android:id="@+id/waveHeader"
-            android:layout_width="match_parent"
-            android:layout_height="230dp"
-            android:visibility="gone"
-            exo:mwhCloseColor="#009ada"
-            exo:mwhStartColor="#009ada"
-            exo:mwhWaveHeight="80dp" />
-
+        
         <com.sminrana.exosimplify.player.PlayerView
             android:id="@+id/styledPlayerView"
             android:layout_width="match_parent"

@@ -41,7 +41,7 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSource;
-import com.scwang.wave.MultiWaveHeader;
+//import com.scwang.wave.MultiWaveHeader;
 import com.sminrana.exosimplify.NotificationBuilder;
 import com.sminrana.exosimplify.NotificationService;
 import com.sminrana.exosimplify.R;
@@ -65,7 +65,7 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
     private PlayerView videoView;
     private SimplifyVideoActivity activity;
     private ImageView fullScreenButton;
-    private MultiWaveHeader audioWaveHeader;
+    //private MultiWaveHeader audioWaveHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +96,7 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
 
         llContainer = findViewById(R.id.ll_video_view_container);
         videoView =  findViewById(R.id.styledPlayerView);
-        audioWaveHeader = findViewById(R.id.waveHeader);
+        //audioWaveHeader = findViewById(R.id.waveHeader);
 
         fullScreenButton = videoView.findViewById(R.id.exo_fullscreen_icon);
         fullScreenButton.setOnClickListener(new View.OnClickListener() {
@@ -232,10 +232,10 @@ public abstract class SimplifyVideoActivity extends AppCompatActivity implements
             mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(Uri.parse(url)));
         }
 
-        audioWaveHeader.setVisibility(View.GONE);
-        if(url.contains(".mp3")) {
-            audioWaveHeader.setVisibility(View.VISIBLE);
-        }
+//        audioWaveHeader.setVisibility(View.GONE);
+//        if(url.contains(".mp3")) {
+//            audioWaveHeader.setVisibility(View.VISIBLE);
+//        }
 
         singlePlayer.player.setMediaSource(mediaSource);
     }
