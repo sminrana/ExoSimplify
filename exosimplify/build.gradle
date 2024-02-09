@@ -44,15 +44,16 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.18.1'
 }
 
-//project.afterEvaluate {
-//    publishing {
-//        publications {
-//            libraryProject(MavenPublication) {
-//                setGroupId 'com.sminrana'
-//                setArtifactId 'exosimplify'
-//                version '1.0.2'
-//                artifact bundleReleaseAar
-//            }
-//        }
-//    }
-//}
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.sminrana'
+                artifactId = 'exosimplify'
+                version = '1.0.9'
+            }
+        }
+    }
+}
