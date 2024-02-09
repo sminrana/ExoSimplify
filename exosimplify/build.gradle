@@ -21,12 +21,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
-//    compileOptions {
-//        sourceCompatibility JavaVersion.VERSION_11
-//        targetCompatibility JavaVersion.VERSION_11
-//    }
-
 }
 
 dependencies {
@@ -43,7 +37,7 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.1'
     implementation 'com.google.android.exoplayer:exoplayer-hls:2.18.1'
     implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.18.1'
-    implementation 'com.scwang.wave:MultiWaveHeader:1.0.0-andx'
+    api 'com.scwang.wave:MultiWaveHeader:1.0.0-andx'
 }
 
 project.afterEvaluate {
