@@ -1,14 +1,14 @@
 [![](https://jitpack.io/v/sminrana/exosimplify.svg)](https://jitpack.io/#sminrana/exosimplify)
 
 
-# ExoSimplify Video Player for Android
+# ExoSimplify Video & Audio Player for Android
 
-ExoSimplify is a background video player with full screen and notification support. 
+ExoSimplify is a background video & audio player with full-screen and notification support. 
 
 
 ### Installation
 
-1. Add it in your root build.gradle (Project) at the end of repositories:
+1. Add it to your root build.gradle (Project) at the end of repositories:
 
 
 
@@ -96,8 +96,8 @@ Inspired by https://github.com/muslimtv/flutter_playout.
 
 ## Contributing
 
-You're contribution is welcome here!
+Your contribution is welcome here!
 
-If you find this library useful, share with friend or star it. 
+If you find this library useful, share it with friends and star it. 
 
 
