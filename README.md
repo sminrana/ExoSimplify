@@ -91,9 +91,6 @@ You must add an icon (ic_notification_icon.png) for the notification in your app
 [<img src="https://raw.githubusercontent.com/sminrana/ExoSimplify/main/app/audio_playing.png" width="50%">](https://raw.githubusercontent.com/sminrana/ExoSimplify/main/app/audio_playing.png "ExoSimplify")
 
 
-Inspired by https://github.com/muslimtv/flutter_playout.
-
-
 ## Contributing
 
 Your contribution is welcome here!
