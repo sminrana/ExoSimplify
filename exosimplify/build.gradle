@@ -45,15 +45,15 @@ dependencies {
     //implementation 'com.scwang.wave:MultiWaveHeader:1.0.0-andx'
 }
 
-//afterEvaluate {
-//    publishing {
-//        publications {
-//            release(MavenPublication) {
-//                from components.release
-//                groupId = 'com.sminrana'
-//                artifactId = 'exosimplify'
-//                version = '1.1.0'
-//            }
-//        }
-//    }
-//}
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.sminrana'
+                artifactId = 'exosimplify'
+                version = '1.1.0'
+            }
+        }
+    }
+}
