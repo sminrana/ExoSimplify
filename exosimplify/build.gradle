@@ -42,18 +42,18 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.1'
     implementation 'com.google.android.exoplayer:exoplayer-hls:2.18.1'
     implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.18.1'
-    implementation 'com.scwang.wave:MultiWaveHeader:1.0.0-andx'
+    //implementation 'com.scwang.wave:MultiWaveHeader:1.0.0-andx'
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.release
-                groupId = 'com.sminrana'
-                artifactId = 'exosimplify'
-                version = '1.1.0'
-            }
-        }
-    }
-}
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            release(MavenPublication) {
+//                from components.release
+//                groupId = 'com.sminrana'
+//                artifactId = 'exosimplify'
+//                version = '1.1.0'
+//            }
+//        }
+//    }
+//}
